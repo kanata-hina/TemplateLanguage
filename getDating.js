@@ -1,5 +1,5 @@
 function getDating(){
- 	var date = new Date();
+  var date = new Date();
   var monthsE = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var dayOfWeeksJ = ["日","月","火","水","木","金","土"];
   var dayOfWeeksE = ["Sun","Mon","Tues","Wednes","Thurs","Fri","Satur"];
