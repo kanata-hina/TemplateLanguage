@@ -26,14 +26,24 @@ document.body.addEventListener('click', function(e){
                   dateMode = 1;
                   dates = getDating(0);
                 }
-                else if(templateText[2] === 'd2'){
-                  dateMode = 2;
+                else if(templateText[2] === 'd2' || templateText[2] === 'd4'){
+                  if(templateText[2] === 'd2'){
+                    dateMode = 2;
+                  }
+                  else{
+                    dateMode = 4;
+                  }
                   var dateMessage = window.prompt('今日を起点(0)としてずらしたい日数分の数字(半角入力)を入力してください.(明日なら 1, 明後日なら 2, 昨日なら -1, 一昨日なら -2)', 0);
                   dateMessage = dateMessage !== null ? dateMessage : 0;
                   dates = getDating(-(-dateMessage));
                 }
-                else if(templateText[2] === 'd3'){
-                  dateMode = 3;
+                else if(templateText[2] === 'd3' || templateText[2] === 'd5'){
+                  if(templateText[2] === 'd3'){
+                    dateMode = 3;
+                  }
+                  else{
+                    dateMode = 5;
+                  }
                   var dateMessage = window.prompt('今日を起点(0)としてずらしたい日数分の数字(半角入力)を入力してください.(昨日なら 1, 一昨日なら 2, 明日なら -1, 明後日なら -2)', 0);
                   dateMessage = dateMessage !== null ? dateMessage : 0;
                   dates = getDating(-dateMessage);
@@ -57,6 +67,14 @@ document.body.addEventListener('click', function(e){
                     for(var j = 0; j < constWord.length; j++){
                       regexp = new RegExp('\\(\\$' + constWord[j] + '\\)', 'g');
                       templateText[i] = templateText[i].replace(regexp, dates[constWord[j]]);
+                      if(dateMode == 4 || dateMode == 5){
+                        regexp = new RegExp('\\(\\$' + constWord[j] + '\\s([\\-\\+])\\s(\\d+)\\)', 'g');
+                        var matchList = templateText[i].match(regexp);
+                        regexp = new RegExp('\\(\\$' + constWord[j] + '\\)');
+                        for(var k = 0; k < matchList.length; k++){
+                          var matchContents = matchList[k].match(regexp);
+                        }
+                      }
                     }
                   }
                   for(j = 0; j < templateText[3]; j++){
