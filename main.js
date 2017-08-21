@@ -1,4 +1,4 @@
-var constWord = ['year', 'month', 'monthE', 'monthE3', 'date', 'dayJ', 'dayE', 'dayE3', 'dayJF'];
+var constWord = ['year', 'month', 'monthE', 'monthE3', 'date', 'dayJ', 'dayE', 'dayE3', 'dayJF', 'allHdayJ', 'allSdayE3', 'yearMonthH', 'monthDateS'];
 var clicked = false;
 var dateMode = 0;
 document.body.addEventListener('click', function(e){
@@ -7,13 +7,14 @@ document.body.addEventListener('click', function(e){
     if(clicked){
       clicked = false;
       var projectName = decodeURIComponent(e.target.parentNode.href).split("/")[3];
-      decodeURIComponent(e.target.parentNode.href).split("/")[4];
+      var nextPageTitle = decodeURIComponent(e.target.parentNode.href).split("/")[4];
       var request = new XMLHttpRequest();
       request.open("GET", "https://scrapbox.io/api/pages/" + projectName + "/" + nextPageTitle + "/text", true);
       request.onload = function (r){
         if (request.readyState === 4) {
           if (request.status === 200) {
             templateText = request.responseText.split(/\r\n|\r|\n/);
+            var dateMessage = 0;
             if(templateText[1] === '#TemplateLanguage'){
               if(templateText.length > 5){
                 var dates;
@@ -33,9 +34,10 @@ document.body.addEventListener('click', function(e){
                   else{
                     dateMode = 4;
                   }
-                  var dateMessage = window.prompt('今日を起点(0)としてずらしたい日数分の数字(半角入力)を入力してください.(明日なら 1, 明後日なら 2, 昨日なら -1, 一昨日なら -2)', 0);
+                  dateMessage = window.prompt('今日を起点(0)としてずらしたい日数分の数字(半角入力)を入力してください.(明日なら 1, 明後日なら 2, 昨日なら -1, 一昨日なら -2)', 0);
                   dateMessage = dateMessage !== null ? dateMessage : 0;
-                  dates = getDating(-(-dateMessage));
+                  dateMessage = -(-dateMessage);
+                  dates = getDating(dateMessage);
                 }
                 else if(templateText[2] === 'd3' || templateText[2] === 'd5'){
                   if(templateText[2] === 'd3'){
@@ -46,7 +48,8 @@ document.body.addEventListener('click', function(e){
                   }
                   var dateMessage = window.prompt('今日を起点(0)としてずらしたい日数分の数字(半角入力)を入力してください.(昨日なら 1, 一昨日なら 2, 明日なら -1, 明後日なら -2)', 0);
                   dateMessage = dateMessage !== null ? dateMessage : 0;
-                  dates = getDating(-dateMessage);
+                  dateMessage = -dateMessage;
+                  dates = getDating(dateMessage);
                 }
                 if(templateText[5] === ''){
                   window.confirm('error:ページ名が存在しません.');
@@ -70,9 +73,41 @@ document.body.addEventListener('click', function(e){
                       if(dateMode == 4 || dateMode == 5){
                         regexp = new RegExp('\\(\\$' + constWord[j] + '\\s([\\-\\+])\\s(\\d+)\\)', 'g');
                         var matchList = templateText[i].match(regexp);
-                        regexp = new RegExp('\\(\\$' + constWord[j] + '\\)');
-                        for(var k = 0; k < matchList.length; k++){
-                          var matchContents = matchList[k].match(regexp);
+                        if(matchList !== null){
+                          regexp = new RegExp('\\(\\$' + constWord[j] + '\\s([\\-\\+])\\s(\\d+)\\)');
+                          for(var k = 0; k < matchList.length; k++){
+                            var matchContents = matchList[k].match(regexp);
+                            var nowDate;
+                            if(matchContents[1] === '-'){
+                              matchContents[2] = -(-(-matchContents[2]));
+                            }
+                            else{
+                              matchContents[2] = (-(-matchContents[2]));
+                            }
+                            switch(constWord[j]){
+                              case 'year':
+                                nowDate = dates[constWord[j]] + matchContents[2];
+                                break;
+                              case 'month':
+                              case 'monthE':
+                              case 'monthE3':
+                              case 'yearMonthH':
+                                nowDate = getDating(dateMessage, 'month', matchContents[2])[constWord[j]];
+                                break;
+                              case 'date':
+                                nowDate = getDating(dateMessage, 'date', matchContents[2]);
+                                break;
+                              case 'dayJ':
+                              case 'dayE':
+                              case 'dayE3':
+                                nowDate = getDating(dateMessage, 'day', matchContents[2])[constWord[j]];
+                                break;
+                              default:
+                                nowDate = getDating(dateMessage, 'another', matchContents[2])[constWord[j]];
+                                break;
+                            }
+                            templateText[i] = templateText[i].replace(regexp, nowDate);
+                          }
                         }
                       }
                     }
