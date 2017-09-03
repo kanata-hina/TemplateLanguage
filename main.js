@@ -2,7 +2,7 @@ var constWord = ['year', 'month', 'monthE', 'monthE3', 'date', 'dayJ', 'dayE', '
 var clicked = false;
 var dateMode = 0;
 document.body.addEventListener('click', function(e){
-  if(e.target.parentNode.className === 'page-link'){
+  if(e.target.parentNode.className === 'page-link' && e.target.parentNode.type === 'link'){
     e.preventDefault();
     if(clicked){
       clicked = false;
