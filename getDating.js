@@ -15,6 +15,7 @@ function getDating(inputDate, setItem, nowDate){
   }
   else{
     if(setItem === 'month'){
+    	date.setDate(1);
       date.setMonth(date.getMonth() + nowDate);
       var monthE = monthsE[date.getMonth()];
       var month = ("0" + (date.getMonth() + 1)).slice(-2);
