@@ -1,4 +1,4 @@
-function createPage(){
+function createPage(projectName, nextPageTitle){
   var request = new XMLHttpRequest();
   request.open("GET", "https://scrapbox.io/api/pages/" + projectName + "/" + nextPageTitle + "/text", true);
   request.onload = function (r){
