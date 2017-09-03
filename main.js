@@ -13,7 +13,7 @@ document.body.addEventListener('click', function(e){
       request.onload = function (r){
         if (request.readyState === 4) {
           if (request.status === 200) {
-            templateText = request.responseText.split(/\r\n|\r|\n/);
+            var templateText = request.responseText.split(/\r\n|\r|\n/);
             var dateMessage = 0;
             if(templateText[1] === '#TemplateLanguage'){
               if(templateText.length > 5){
