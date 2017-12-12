@@ -15,7 +15,7 @@ for(var num = 0; num < templates.length; num++){
 
 scrapbox.PageMenu.addMenu({
   title: 'insertTemplate',
-  image: 'https://i.gyazo.com/e458f8300fb5ada539612cbf25a0de14.png'
+  image: 'https://i.gyazo.com/d03efaf45106f9af239dfe5fb0dbf979.png'
 })
 
 for(var num = 0; num < templates.length; num++){
